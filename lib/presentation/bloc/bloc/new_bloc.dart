@@ -1,4 +1,4 @@
-import 'package:flutter_application_ab9/data/api/api.dart';
+import 'package:flutter_application_ab9/data/repository/api.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'new_event.dart';
 import 'new_state.dart';
