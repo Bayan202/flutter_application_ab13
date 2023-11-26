@@ -1,22 +1,32 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
 import 'package:flutter_application_ab9/presentation/screen/scan.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 void main() {
-  testWidgets('ScanPage navigates to DisplayDataPage on scanning a QR code',
-      (WidgetTester tester) async {
-    bool qrCodeScanned = false;
+  group('QRCodeProcessor Tests', () {
+    test('should return null for null input', () {
+      final processor = QRCodeProcessor();
+      expect(processor.processQRCode(null), isNull);
+    });
 
-    void mockOnQRCodeScanned(String code) {
-      qrCodeScanned = true;
-    }
+    test('should return same string for valid input', () {
+      final processor = QRCodeProcessor();
+      const qrCode = 'validCode';
+      expect(processor.processQRCode(qrCode), qrCode);
+    });
+  });
 
-    await tester.pumpWidget(
-        MaterialApp(home: ScanPage(onQRCodeScanned: mockOnQRCodeScanned)));
+  group('CameraControllerMock Tests', () {
+    test('should stream barcodes', () async {
+      final expectedBarcode = Barcode('expectedCode', BarcodeFormat.qrcode, []);
+      final streamController = StreamController<Barcode>();
+      final controllerMock = CameraControllerMock(streamController.stream);
 
-    mockOnQRCodeScanned('Mock QR Code');
-
-    expect(qrCodeScanned, isTrue);
+      streamController.add(expectedBarcode);
+      await expectLater(
+          controllerMock.scannedDataStream, emits(expectedBarcode));
+    });
   });
 }

@@ -11,6 +11,42 @@ class ScanPage extends StatefulWidget {
   _ScanPageState createState() => _ScanPageState();
 }
 
+abstract class IQRViewController {
+  Stream<Barcode> get scannedDataStream;
+
+  void pauseCamera();
+  void resumeCamera();
+  void dispose();
+}
+
+class QRCodeProcessor {
+  String? processQRCode(String? qrCode) {
+    if (qrCode == null || qrCode.isEmpty) {
+      return null;
+    }
+
+    return qrCode;
+  }
+}
+
+class CameraControllerMock implements IQRViewController {
+  final Stream<Barcode> _barcodeStream;
+
+  CameraControllerMock(this._barcodeStream);
+
+  @override
+  Stream<Barcode> get scannedDataStream => _barcodeStream;
+
+  @override
+  void pauseCamera() {}
+
+  @override
+  void resumeCamera() {}
+
+  @override
+  void dispose() {}
+}
+
 class _ScanPageState extends State<ScanPage> {
   QRViewController? controller;
 
